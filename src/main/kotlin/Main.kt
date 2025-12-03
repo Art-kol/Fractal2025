@@ -9,8 +9,6 @@ import androidx.compose.ui.window.application
 import ru.gr05307.ui.PaintPanel
 import ru.gr05307.ui.SelectionPanel
 import ru.gr05307.viewmodels.MainViewModel
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 
 @Composable
 @Preview
@@ -33,16 +31,10 @@ fun App(viewModel: MainViewModel= MainViewModel()) {
                 viewModel::onStopSelecting,
                 viewModel::onSelecting,
             )
-
-            // тестовая кнопка для проверки сохранения.
-            Button(onClick = {
-                viewModel.saveFractalToJpg("fractal.jpg")
-            }) {
-                Text("Сохранить")
-            }
         }
     }
 }
+
 fun main(): Unit = application {
     Window(
         onCloseRequest = ::exitApplication,
