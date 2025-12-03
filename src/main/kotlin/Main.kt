@@ -51,5 +51,3 @@ fun main(): Unit = application {
         App()
     }
 }
-// тест
-
