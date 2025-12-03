@@ -30,8 +30,6 @@ fun App(viewModel: MainViewModel = MainViewModel()) {
                 onDragStart = viewModel::onStartSelecting,
                 onDragEnd = viewModel::onStopSelecting,
                 onDrag = viewModel::onSelecting,
-                onPanStart = viewModel::onStartPanning,
-                onPanEnd = viewModel::onStopPanning,
                 onPan = viewModel::onPanning,
             )
         }
