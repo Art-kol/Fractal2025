@@ -38,6 +38,29 @@ class MainViewModel{
         mustRepaint = false
     }
 
+    //Обновление размеров окна с сохранением пропорций
+    private fun updatePlainSize(newWidth: Float, newHeight: Float) {
+        plain.width = newWidth
+        plain.height = newHeight
+
+        val aspect = plain.aspectRatio
+        val newAspect = newWidth / newHeight
+
+        if (newAspect > aspect) {
+            // Ширина лишняя, подгоняем по высоте
+            val centerX = (plain.xMin + plain.xMax) / 2.0
+            val halfWidth = (plain.yMax - plain.yMin) * newAspect / 2.0
+            plain.xMin = centerX - halfWidth
+            plain.xMax = centerX + halfWidth
+        } else {
+            // Высота лишняя, подгоняем по ширине
+            val centerY = (plain.yMin + plain.yMax) / 2.0
+            val halfHeight = (plain.xMax - plain.xMin) / newAspect / 2.0
+            plain.yMin = centerY - halfHeight
+            plain.yMax = centerY + halfHeight
+        }
+    }
+
     fun onImageUpdate(image: ImageBitmap) {
         fractalImage = image
     }
