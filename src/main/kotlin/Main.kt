@@ -27,9 +27,10 @@ fun App(viewModel: MainViewModel = MainViewModel()) {
                 viewModel.selectionOffset,
                 viewModel.selectionSize,
                 Modifier.fillMaxSize(),
-                viewModel::onStartSelecting,
-                viewModel::onStopSelecting,
-                viewModel::onSelecting,
+                onDragStart = viewModel::onStartSelecting,
+                onDragEnd = viewModel::onStopSelecting,
+                onDrag = viewModel::onSelecting,
+                onPan = viewModel::onPanning,
             )
         }
     }
