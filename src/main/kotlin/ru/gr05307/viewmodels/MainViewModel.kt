@@ -14,15 +14,15 @@ import ru.gr05307.painting.FractalPainter
 import ru.gr05307.painting.convertation.Converter
 import ru.gr05307.painting.convertation.Plain
 
-class MainViewModel{
+class MainViewModel {
     var fractalImage: ImageBitmap = ImageBitmap(0, 0)
     var selectionOffset by mutableStateOf(Offset(0f, 0f))
     var selectionSize by mutableStateOf(Size(0f, 0f))
-    private val plain = Plain(-2.0,1.0,-1.0,1.0)
+    private val plain = Plain(-2.0, 1.0, -1.0, 1.0)
     private val fractalPainter = FractalPainter(plain)
     private var mustRepaint by mutableStateOf(true)
 
-    // Обновление размеров окна с сохранением пропорций
+    /** Обновление размеров окна с сохранением пропорций */
     private fun updatePlainSize(newWidth: Float, newHeight: Float) {
         plain.width = newWidth
         plain.height = newHeight
@@ -45,9 +45,10 @@ class MainViewModel{
         }
     }
 
+    /** Рисование фрактала */
     fun paint(scope: DrawScope) = runBlocking {
-        plain.width = scope.size.width
-        plain.height = scope.size.height
+        updatePlainSize(scope.size.width, scope.size.height)
+
         if (mustRepaint
             || fractalImage.width != plain.width.toInt()
             || fractalImage.height != plain.height.toInt()
@@ -61,7 +62,7 @@ class MainViewModel{
         mustRepaint = false
     }
 
-    /** Обновление ImageBitmap после рисования */
+    // Обновление ImageBitmap после рисования
     fun onImageUpdate(image: ImageBitmap) {
         fractalImage = image
     }
@@ -72,25 +73,11 @@ class MainViewModel{
         selectionSize = Size(0f, 0f)
     }
 
-    // Обновление выделяемой области
+    //Обновление выделяемой области
     fun onSelecting(offset: Offset) {
         selectionSize = Size(selectionSize.width + offset.x, selectionSize.height + offset.y)
     }
 
-    fun onStopSelectingsd(){
-        if (selectionSize.width != 0f && selectionSize.height != 0f) {
-            val xMin = Converter.xScr2Crt(selectionOffset.x, plain)
-            val yMin = Converter.yScr2Crt(selectionOffset.y+selectionSize.height, plain)
-            val xMax = Converter.xScr2Crt(selectionOffset.x+selectionSize.width, plain)
-            val yMax = Converter.yScr2Crt(selectionOffset.y, plain)
-            plain.xMin = xMin
-            plain.yMin = yMin
-            plain.xMax = xMax
-            plain.yMax = yMax
-            mustRepaint = true
-        }
-        selectionSize = Size(0f,0f)
-    }
     // Завершение выделения и масштабирование
     fun onStopSelecting() {
         if (selectionSize.width == 0f || selectionSize.height == 0f) return
@@ -103,10 +90,10 @@ class MainViewModel{
         val selAspect = selWidth / selHeight
         if (selAspect > aspect) {
             // ширина больше, подгоняем высоту
-            selHeight = (selWidth / aspect).toFloat()
+            selHeight = (selWidth / aspect).toFloat()  // Приведение к Float
         } else {
             // высота больше, подгоняем ширину
-            selWidth = (selHeight * aspect).toFloat()
+            selWidth = (selHeight * aspect).toFloat()  // Приведение к Float
         }
 
         // Рассчитываем новые границы фрактала
@@ -134,5 +121,6 @@ class MainViewModel{
         plain.yMin += dy
         plain.yMax += dy
 
-
+        mustRepaint = true
+    }
 }
