@@ -29,15 +29,16 @@ class MainViewModel{
             || fractalImage.width != plain.width.toInt()
             || fractalImage.height != plain.height.toInt()
         ) {
-            launch (Dispatchers.Default) {
+            launch(Dispatchers.Default) {
                 fractalPainter.paint(scope)
             }
-        }
-        else
+        } else {
             scope.drawImage(fractalImage)
+        }
         mustRepaint = false
     }
 
+    /** Обновление ImageBitmap после рисования */
     fun onImageUpdate(image: ImageBitmap) {
         fractalImage = image
     }
