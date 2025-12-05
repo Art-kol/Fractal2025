@@ -52,6 +52,11 @@ class JuliaViewModelWrapper(
     fun onPanning(offset: androidx.compose.ui.geometry.Offset) = baseViewModel.onPanning(offset)
     fun saveFractalToJpg(path: String) = baseViewModel.saveFractalToJpg(path)
 
+    // Добавка Артема. Для отслеживания изменений
+    fun shouldCloseJuliaPanel() = baseViewModel.shouldCloseJuliaPanel
+    fun resetCloseJuliaFlag() = baseViewModel.resetCloseJuliaFlag()
+        // конец добавки
+
     // Переопределяем обработку кликов
     fun onPointClicked(x: Float, y: Float) {
         val re = ru.gr05307.painting.convertation.Converter.xScr2Crt(x, baseViewModel.plain)
