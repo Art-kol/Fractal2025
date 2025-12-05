@@ -14,11 +14,14 @@ import androidx.compose.ui.window.application
 import ru.gr05307.ui.PaintPanel
 import ru.gr05307.ui.SelectionPanel
 import ru.gr05307.viewmodels.MainViewModel
-import androidx.compose.runtime.*
+
 // Добавления от Артёма
+import androidx.compose.runtime.*
 import ru.gr05307.julia.JuliaWindow
 import ru.gr05307.math.Complex
+// Конец
 
+// Полностью добавленный код от Артема
 class JuliaViewModelWrapper(
     private val baseViewModel: MainViewModel,
     private val onJuliaPointSelected: (Complex) -> Unit
@@ -45,59 +48,27 @@ class JuliaViewModelWrapper(
         onJuliaPointSelected(Complex(re, im))
     }
 }
+// Конец блока
 
-@Composable
-@Preview
-fun App(viewModel: MainViewModel = MainViewModel()) {
-    MaterialTheme {
-        Box {
-            PaintPanel(
-                Modifier.fillMaxSize(),
-                onImageUpdate = { image -> viewModel.onImageUpdate(image) },
-                onPaint = { scope -> viewModel.paint(scope) },
-            )
-            SelectionPanel(
-                viewModel.selectionOffset,
-                viewModel.selectionSize,
-                Modifier.fillMaxSize(),
-                onDragStart = viewModel::onStartSelecting,
-                onDragEnd = viewModel::onStopSelecting,
-                onDrag = viewModel::onSelecting,
-                onPan = viewModel::onPanning,
-            )
-            Button(
-                onClick = { viewModel.performUndo() },
-                enabled = viewModel.canUndo(),
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp)
-            ) {
-                Text("Назад")
-            }
-        }
-    }
-}
+// Весь App переехал в main()
 
 fun main(): Unit = application {
 
     var juliaPoints by remember { mutableStateOf<List<Complex>>(emptyList()) }
 
-    // Главное окно
     Window(
         onCloseRequest = ::exitApplication,
         title = "Фрактал - 2025 (гр. 05-307)"
     ) {
-        // Создаем обычный ViewModel
         val baseViewModel = remember { MainViewModel() }
 
-        // Создаем обертку для обработки кликов
         val wrappedViewModel = remember {
             JuliaViewModelWrapper(baseViewModel) { complex ->
                 juliaPoints = juliaPoints + complex
             }
         }
 
-        // Используем обертку в приложении
+        // Переезд Appa:
         MaterialTheme {
             Box {
                 PaintPanel(
@@ -109,10 +80,7 @@ fun main(): Unit = application {
                     wrappedViewModel.selectionOffset,
                     wrappedViewModel.selectionSize,
                     Modifier.fillMaxSize(),
-                    onClick = { pos ->
-                        println("CLICK AT $pos")
-                        wrappedViewModel.onPointClicked(pos.x, pos.y)
-                    },
+                    onClick = { pos -> wrappedViewModel.onPointClicked(pos.x, pos.y) },
                     onDragStart = wrappedViewModel::onStartSelecting,
                     onDragEnd = wrappedViewModel::onStopSelecting,
                     onDrag = wrappedViewModel::onSelecting,

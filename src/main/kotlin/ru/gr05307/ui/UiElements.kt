@@ -21,24 +21,10 @@ fun PaintPanel(
     modifier: Modifier = Modifier,
     onImageUpdate: (ImageBitmap)->Unit = {},
     onPaint: (DrawScope)->Unit = {},
-//    // Изменения от Артема
-//    onClick: (Offset)->Unit = {},
 ) {
     val graphicsLayer = rememberGraphicsLayer()
     val scope = rememberCoroutineScope()
-
-    // Изменения от Артёма, этап 3
-    Canvas(
-        modifier
-//            .pointerInput(Unit) {
-//                detectTapGestures(
-//                    onTap = { pos ->
-//                        println("TAP $pos")
-//                        onClick(pos)
-//                    }
-//                )
-//            }
-            .drawWithContent {
+    Canvas(modifier.drawWithContent {
                 graphicsLayer.record {
                     this@drawWithContent.drawContent()
                 }
@@ -55,7 +41,9 @@ fun SelectionPanel(
     offset: Offset,
     size: Size,
     modifier: Modifier = Modifier,
+    // Добавление от Артема
     onClick: (Offset)->Unit = {},
+    // Конец добавления
     onDragStart: (Offset) -> Unit = {},
     onDragEnd: () -> Unit = {},
     onDrag: (Offset) -> Unit = {},
@@ -64,19 +52,13 @@ fun SelectionPanel(
     onPan: (Offset) -> Unit = {},
 ){
     var dragButton by remember { mutableStateOf<PointerButton?>(null) }
-    // Изменения Артема 7
-    // var isDragging by remember { mutableStateOf(false) }
-    // Конец изменений
 
     Canvas(modifier = modifier
+        // Детект клика
         .pointerInput(Unit) {
-            detectTapGestures(
-                onTap = { pos ->
-                    println("TAP $pos")
-                    onClick(pos)
-                }
-            )
+            detectTapGestures( onTap = { pos -> onClick(pos) } )
         }
+            // Конец детекта
         .pointerInput(Unit) {
         awaitPointerEventScope {
             while (true) {
@@ -94,24 +76,14 @@ fun SelectionPanel(
 
                         val position = event.changes.first().position
                         when (dragButton) {
-                            // Начало изменений Артема 7
                             PointerButton.Primary -> onDragStart(position)
                             PointerButton.Secondary -> onPanStart(position)
                             else -> {}
-                            /*PointerButton.Primary -> {
-                                isDragging = true
-                                onDragStart(position)
-                            }
-                            PointerButton.Secondary -> {
-                                isDragging = true
-                                onPanStart(position)
-                            }
-                            else -> {}*/
                         }
                     }
 
                     PointerEventType.Move -> {
-                        if (dragButton != null /*Изменения Артема 7 ->&& isDragging*/) {
+                        if (dragButton != null) {
                             val change = event.changes.first()
                             val dragAmount = change.position - change.previousPosition
 
@@ -125,27 +97,19 @@ fun SelectionPanel(
                     }
 
                     PointerEventType.Release -> {
-                        if (dragButton != null /*Изменения Артема 7&& isDragging*/) {
+                        if (dragButton != null) {
                             when (dragButton) {
                                 PointerButton.Primary -> onDragEnd()
                                 PointerButton.Secondary -> onPanEnd()
                                 else -> {}
                             }
                             dragButton = null
-                            /*Изменения Артема 7*/// isDragging = false
                         }
                     }
-
-                    // Изменения Артема 7
-                    //else -> {}
                 }
             }
         }
     }){
-        // Изменения Артема 7
-        //this.drawRect(Color.Blue, offset, size, alpha = 0.2f)
-        //if (size.width > 0f && size.height > 0f) {
-            this.drawRect(Color.Blue, offset, size, alpha = 0.2f)
-        //}
+        this.drawRect(Color.Blue, offset, size, alpha = 0.2f)
     }
 }
